@@ -108,7 +108,51 @@ class CreditCard(object):
             raise TypeError("amount should be a number")
 
 
+class Progression:
+    def __init__(self, start=0):
+        self._current = start
+
+    def advance(self):
+        self._current += 1
+
+    def __next__(self):
+        if self._current is None:
+            raise StopIteration
+        else:
+            answer = self._current
+            self.advance()
+            return answer
+
+    def __iter__(self):
+        return self
+
+    def print_progression(self, n):
+        return ' '.join(str(next(self)) for _ in range(n))
+
+
+class Fibonacci(Progression):
+
+    def __init__(self, start, step):
+        super(Progression, self).__init__(start)
+        self.previous = step - start
+
+    def advance(self):
+        self.previous, self._current = self._current, self.previous + self._current
+
+    def __getitem__(self, item):
+        return self[item]
+
+
 if __name__ == "__main__":
+
+    """
+    R 2.16
+    range class is a arithmetic progression in which last = a+ (n-1)d
+    by rearranging it we get (stop - start /d) + 1
+    but when we do max(0, stop-start+step-1)//step this gives the number of factors of step that lies between start and stop
+    which will be our length of range, the number of elements of range 
+    """
+
     wallet = list()
     wallet.append(CreditCard('John', 'SBI', '5391 0376 9387 5309', 2500))
     wallet.append(CreditCard('Dave', 'SBI', '5391 0376 9387 1953', 3500))
