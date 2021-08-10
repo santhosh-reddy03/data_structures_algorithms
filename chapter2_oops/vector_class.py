@@ -2,6 +2,7 @@
 this contains all inbuilt class methods definitions
 from R 2.9 to R 2.15
 """
+from abc import ABCMeta, abstractmethod
 
 
 class Vector:
@@ -88,6 +89,48 @@ class Vector:
 
     def __str__(self):
         return '< ' + str(self.__coords)[1:-1] + ' >'
+
+
+class Sequence(metaclass=ABCMeta):
+
+    @abstractmethod
+    def __len__(self):
+        pass
+
+    @abstractmethod
+    def __getitem__(self, item):
+        pass
+
+    def __contains__(self, item):
+        for j in range(len(self)):
+            if self[j] == item:
+                return True
+        return False
+
+    def __index__(self, val):
+        for j in range(len(self)):
+            if self[j] == val:
+                return j
+        raise ValueError("value not in sequence")
+
+    def count(self, val):
+        k = 0
+        for _ in self:
+            if _ == val:
+                k += 1
+        return k
+
+    def __eq__(self, other):
+        for j in range(len(self)):
+            if self[j] != other[j]:
+                return False
+        return True
+
+    def __lt__(self, other):
+        for j in range(len(self)):
+            if self[j] > other[j]:
+                return False
+        return True
 
 
 if __name__ == '__main__':

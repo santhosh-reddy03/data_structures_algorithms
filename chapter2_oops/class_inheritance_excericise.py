@@ -130,17 +130,30 @@ class Progression:
         return ' '.join(str(next(self)) for _ in range(n))
 
 
+class ArithmeticProgression(Progression):
+
+    def __init__(self, common_difference, first=0):
+        super().__init__(first)
+        self._increment = common_difference
+
+    def advance(self):
+        self._current += self._increment
+
+
 class Fibonacci(Progression):
 
-    def __init__(self, start, step):
-        super(Progression, self).__init__(start)
-        self.previous = step - start
+    def __init__(self, first=0, second=1):
+        super().__init__(first)
+        self.previous = second - first
 
     def advance(self):
         self.previous, self._current = self._current, self.previous + self._current
 
     def __getitem__(self, item):
-        return self[item]
+        answer = Fibonacci(self._current, self._current + self.previous)
+        for _ in range(0, item):
+            next(answer)
+        return answer._current
 
 
 if __name__ == "__main__":
@@ -151,6 +164,15 @@ if __name__ == "__main__":
     by rearranging it we get (stop - start /d) + 1
     but when we do max(0, stop-start+step-1)//step this gives the number of factors of step that lies between start and stop
     which will be our length of range, the number of elements of range 
+    
+    R 2.20
+    multilevel inheritance where B inherits A, C inherits B, D inherits C and so on.. other words "deep inheritance"
+    this will create more and more redundancy as we go down the inheritance, as there might be lot of methods that the lower classes 
+    would be inheriting without actual needs and increased complexity of handling 
+    https://stackoverflow.com/questions/28721913/efficiency-disadvantages-of-having-very-deep-and-very-shallow-inheritance-trees
+      
+    R 2.21
+    "shallow inheritance" the same data of R 2.20 can be used for this as well 
     """
 
     wallet = list()
@@ -167,3 +189,9 @@ if __name__ == "__main__":
         print(wallet[c].get_customer())
         print(wallet[c].get_limit())
         print(wallet[c].get_balance(), end="\n\n")
+
+    ob = Fibonacci(2, 2)
+    print('R 2.18', ob[8])
+    ap = ArithmeticProgression(128)
+    # using ap last term formula l = a + (n-1)d
+    print('R 2.19', ((2**63)//128) + 1, '= 72057594037927937')
